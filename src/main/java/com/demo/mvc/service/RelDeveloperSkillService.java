@@ -1,7 +1,7 @@
 package com.demo.mvc.service;
 
 import com.demo.mvc.dto.DeveloperDto;
-import com.demo.mvc.dto.SkillDto;
+import com.demo.mvc.dto.DeveloperSkillDto;
 import com.demo.mvc.model.Developer;
 import com.demo.mvc.model.RelDeveloperSkill;
 import com.demo.mvc.model.Skill;
@@ -32,34 +32,14 @@ public class RelDeveloperSkillService {
         return developerDto;
     }
 
-    public SkillDto getSkill(Long id) {
-        SkillDto skillDto = new SkillDto();
-        Optional<Skill> skill = skillRepository.findById(id);
-        List<RelDeveloperSkill> relDeveloperSkills = relDeveloperSkillRepository.getSkillsById(skill.orElseThrow(() -> new RuntimeException("Skill not found.")).getId());
-        List<Developer> developers = relDeveloperSkills.stream().map(RelDeveloperSkill::getDeveloper).toList();
-        skillDto.setDevelopers(developers);
-        skillDto.setSkill(skill.get());
-        return skillDto;
-    }
 
     @Transactional
-    public DeveloperDto saveDeveloperSkills(DeveloperDto dto) {
+    public DeveloperSkillDto saveDeveloperSkills(DeveloperSkillDto dto) {
         Developer developer = developerRepository.findById(dto.getDeveloper().getId()).orElseThrow(() -> new RuntimeException("Developer not found"));
-        dto.getSkills().forEach(s -> {
-            Skill skill = skillRepository.findById(s.getId()).orElseThrow(() -> new RuntimeException("Skill not found"));
-            relDeveloperSkillRepository.save(new RelDeveloperSkill(developer, skill));
-        });
+        Skill skill = skillRepository.findById(dto.getSkill().getId()).orElseThrow(() -> new RuntimeException("Skill not found"));
+        relDeveloperSkillRepository.save(new RelDeveloperSkill(developer, skill));
         return dto;
     }
 
-    @Transactional
-    public SkillDto saveDeveloperSkills(SkillDto dto) {
-        Skill skill = skillRepository.findById(dto.getSkill().getId()).orElseThrow(() -> new RuntimeException("Skill not found"));
-        dto.getDevelopers().forEach(s -> {
-            Developer developer = developerRepository.findById(s.getId()).orElseThrow(() -> new RuntimeException("Developer not found"));
-            relDeveloperSkillRepository.save(new RelDeveloperSkill(developer, skill));
-        });
-        return dto;
-    }
 
 }

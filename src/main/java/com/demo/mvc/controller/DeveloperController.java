@@ -1,6 +1,7 @@
 package com.demo.mvc.controller;
 
 import com.demo.mvc.dto.DeveloperDto;
+import com.demo.mvc.dto.DeveloperSkillDto;
 import com.demo.mvc.model.Developer;
 import com.demo.mvc.service.DeveloperService;
 import com.demo.mvc.service.RelDeveloperSkillService;
@@ -41,14 +42,8 @@ public class DeveloperController {
     }
 
     @PostMapping("/saveWithSkills")
-    public ResponseEntity<DeveloperDto> saveDeveloperSkills(@RequestBody DeveloperDto dto) {
+    public ResponseEntity<DeveloperSkillDto> saveDeveloperSkills(@RequestBody DeveloperSkillDto dto) {
         return new ResponseEntity<>(relDeveloperSkillService.saveDeveloperSkills(dto), HttpStatus.OK);
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Developer> updateDeveloper(@PathVariable Long id, @RequestBody Developer developer) {
-        developer.setId(id);
-        return new ResponseEntity<>(developerService.save(developer), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
